@@ -6,6 +6,10 @@ description 'ESX Police Job'
 
 version '1.3.0'
 
+shared_script {
+    '@qb-core/import.lua'
+}
+
 server_scripts {
 	'config.lua',
 	'server/main.lua'
