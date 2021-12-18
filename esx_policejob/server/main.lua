@@ -103,7 +103,7 @@ QBCore.Functions.CreateCallback('esx_policejob:getOtherPlayerData', function(sou
 end)
 
 QBCore.Functions.CreateCallback('esx_policejob:getFineList', function(source, cb, category)
-	exports.oxymsql:execute('SELECT * FROM fine_types WHERE category = @category', {
+	exports.oxmysql:execute('SELECT * FROM fine_types WHERE category = @category', {
 		['@category'] = category
 	}, function(fines)
 		cb(fines)
@@ -145,7 +145,7 @@ QBCore.Functions.CreateCallback('esx_policejob:getVehicleFromPlate', function(so
 	}, function(result)
 		if result[1] ~= nil then
 
-			exports.ghmattimysql:execute('SELECT name, firstname, lastname FROM users WHERE identifier = @identifier',  {
+			exports.oxmysql:execute('SELECT name, firstname, lastname FROM users WHERE identifier = @identifier',  {
 				['@identifier'] = result[1].owner
 			}, function(result2)
 
