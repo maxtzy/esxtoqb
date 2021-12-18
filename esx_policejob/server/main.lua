@@ -2,11 +2,7 @@ QBCore = nil
 
 TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
 
-if Config.MaxInService ~= -1 then
-	TriggerEvent('esx_service:activateService', 'police', Config.MaxInService)
-end
 
-TriggerEvent('esx_society:registerSociety', 'police', 'Police', 'society_police', 'society_police', 'society_police', {type = 'public'})
 
 
 RegisterServerEvent('esx_policejob:handcuff')
@@ -44,7 +40,7 @@ end)
 QBCore.Functions.CreateCallback('esx_policejob:getOtherPlayerData', function(source, cb, target)
 	if Config.EnableESXIdentity then
 		local xPlayer = QBCore.Functions.GetPlayer(target)
-		local result = MySQL.Sync.fetchAll('SELECT firstname, lastname, sex, dateofbirth, height FROM users WHERE identifier = @identifier', {
+		local result = export:oxmysql:execute('SELECT firstname, lastname, sex, dateofbirth, height FROM players WHERE identifier = @identifier', {
 			['@identifier'] = xPlayer.PlayerData.citizenid
 		})
 
@@ -107,7 +103,7 @@ QBCore.Functions.CreateCallback('esx_policejob:getOtherPlayerData', function(sou
 end)
 
 QBCore.Functions.CreateCallback('esx_policejob:getFineList', function(source, cb, category)
-	exports.ghmattimysql:execute('SELECT * FROM fine_types WHERE category = @category', {
+	exports.oxymsql:execute('SELECT * FROM fine_types WHERE category = @category', {
 		['@category'] = category
 	}, function(fines)
 		cb(fines)
@@ -116,7 +112,7 @@ end)
 
 QBCore.Functions.CreateCallback('esx_policejob:getVehicleInfos', function(source, cb, plate)
 
-	exports.ghmattimysql:execute('SELECT owner FROM owned_vehicles WHERE plate = @plate', {
+	exports.oxmysql:execute('SELECT owner FROM owned_vehicles WHERE plate = @plate', {
 		['@plate'] = plate
 	}, function(result)
 
@@ -125,7 +121,7 @@ QBCore.Functions.CreateCallback('esx_policejob:getVehicleInfos', function(source
 		}
 
 		if result[1] then
-			exports.ghmattimysql:execute('SELECT name, firstname, lastname FROM users WHERE identifier = @identifier',  {
+			exports.oxymysql:execute('SELECT name, firstname, lastname FROM users WHERE identifier = @identifier',  {
 				['@identifier'] = result[1].owner
 			}, function(result2)
 
@@ -144,7 +140,7 @@ QBCore.Functions.CreateCallback('esx_policejob:getVehicleInfos', function(source
 end)
 
 QBCore.Functions.CreateCallback('esx_policejob:getVehicleFromPlate', function(source, cb, plate)
-	exports.ghmattimysql:execute('SELECT owner FROM owned_vehicles WHERE plate = @plate', {
+	exports.oxmysql:execute('SELECT owner FROM owned_vehicles WHERE plate = @plate', {
 		['@plate'] = plate
 	}, function(result)
 		if result[1] ~= nil then
@@ -184,7 +180,7 @@ QBCore.Functions.CreateCallback('esx_policejob:buyJobVehicle', function(source, 
 				plaka = vehicleProps.plate,
 				model = vehicleProps.model
 			}, 
-			exports.ghmattimysql:execute('INSERT INTO owned_vehicles (owner, vehicle, plate, model, type, job, `stored`) VALUES (@owner, @vehicle, @plate, @model, @type, @job, @stored)', {
+			exports.oxmysql:execute('INSERT INTO owned_vehicles (owner, vehicle, plate, model, type, job, `stored`) VALUES (@owner, @vehicle, @plate, @model, @type, @job, @stored)', {
 				['@owner'] = xPlayer.PlayerData.citizenid,
 				['@vehicle'] = json.encode(vehicleProps),
 				['@plate'] = vehicleProps.plate,
